@@ -1,80 +1,121 @@
-<!-- omit in toc -->
-# PROYECTO – VISUALIZACIÓN EN TIEMPO REAL, DASHBOARD INTERACTIVO Y RUTAS EN MAPA DE BOLIVIA EN "R" 📊
+# 📊 Dashboard Interactivo en Tiempo Real – Cooperativa Minera ⛏️
 
 ## 🎯 Objetivo General
-Desarrollar un **dashboard funcional e interactivo** que integre:
-
-- Visualizaciones en **tiempo real** desde múltiples fuentes
-- Rutas interdepartamentales trazadas sobre el **mapa de Bolivia**
-- Gráficos comparativos y KPIs dinámicos
-- Información estructurada en una base de datos **real o simulada**
-- Análisis centrado en el sector **[especificar sector: salud, turismo, ventas, transporte, etc.]** en Bolivia
-
-
-📄 **Resultados generados:** Se pueden ver localmente en el `index.html` o en línea aquí: [🌐 Proyecto en GitHub Pages](https://gastonnina.github.io/miadas_M03_proyecto)
+Desarrollar un dashboard interactivo para visualizar y analizar datos financieros de una **cooperativa minera**, con filtros dinámicos y métricas clave.
 
 ---
 
-## 🧑‍🤝‍🧑 Integrantes del Grupo
+## 👥 Integrantes
 
-- Paolo Ramos Mendez
-- Gaston Nina Sossa
+- Paolo Ramos Mendez  
+- Gaston Nina Sossa  
 
-<!-- omit in toc -->
-## 🗂️ Tabla de Contenidos
+---
 
-- [🎯 Objetivo General](#-objetivo-general)
-- [🧑‍🤝‍🧑 Integrantes del Grupo](#-integrantes-del-grupo)
-- [🛠️ Requisitos](#️-requisitos)
-- [⚙️ Instalación](#️-instalación)
-- [📁 Estructura de Archivos](#-estructura-de-archivos)
-- [🚀 Ejecución](#-ejecución)
-- [📊 Resultados](#-resultados)
-
-
-## 🛠️ Requisitos
-
-- **R** (≥ 4.0.0): [📥 Descargar R](https://cran.r-project.org/)
-- **RStudio** (opcional, pero recomendado): [📥 Descargar RStudio](https://posit.co/download/rstudio-desktop/)
-
-- **Librerías de R:** `httr`, `rvest`, `dplyr`, `jsonlite`, `wbstats`
-
-## ⚙️ Instalación
-
-1. Clonar el repositorio 🧑‍💻:
-
-   ```bash
-   git clone https://github.com/gastonnina/miadas_M03_proyecto.git
-   cd miadas_M03_proyecto
-   ```
-
-2. Instalar librerías en R 📦:
-
-   ```r
-   install.packages(c("dplyr", "stringr"))
-   ```
-
-## 📁 Estructura de Archivos
+## 🗂️ Estructura del Proyecto
 
 ```
-
-├── README.md                    # 📄 Archivo con instrucciones del proyecto
-├── index.Rmd                    # 🔢 Código principal en R Markdown
-├── _fig/                        # 🖼️ graficas auxiliares del proyecto
-├── _data/                       # 📂 Resultados guardados
-│   └── datos_consolidado.RData  # 💾 Base de datos consolidada
+.
+├── dashboard.py                  # Aplicación principal Dash
+├── _data/
+│   ├── clientes.csv              # Datos de clientes
+│   ├── cuentas.csv               # Datos de cuentas
+│   ├── movimientos.csv           # Movimientos financieros
+│   ├── departamentos.csv         # Catálogo de departamentos
+│   ├── profesiones.csv           # Catálogo de profesiones
+│   ├── clientes.feather          # Versión Feather de los datos
+│   ├── cuentas.feather
+│   ├── movimientos.feather
+│   ├── departamentos.feather
+│   └── profesiones.feather
+├── Dockerfile                    # Imagen para despliegue en contenedor
+├── pyproject.toml                # Archivo de configuración PDM
+├── .gitignore                    # Archivos ignorados por Git
+└── README.md                     # Este archivo
 ```
+
+---
+
+## ⚙️ Requisitos
+
+- Python ≥ 3.9
+- PDM (gestor de dependencias recomendado) → https://pdm.fming.dev/
+
+Librerías principales:
+
+- `pandas`
+- `dash`
+- `plotly`
+- `pyarrow`
+- `faker`
+- `numpy`
+
+---
+
+## 📦 Instalación
+
+1. Clonar el repositorio:
+
+```bash
+git clone https://github.com/usuario/cooperativa-dashboard.git
+cd cooperativa-dashboard
+```
+
+2. Instalar dependencias con [PDM](https://pdm.fming.dev/):
+
+```bash
+pdm install
+```
+
+---
 
 ## 🚀 Ejecución
 
-1. Abre `index.Rmd` en RStudio. 🖥️
-2. Ejecuta las siguientes secciones del archivo en orden correlativo: 🛠️
+```bash
+pdm run app.py
+```
 
-## 📊 Resultados
+Esto abrirá una instancia local del dashboard en:  
+📍 `http://127.0.0.1:8050`
 
-📁 **El archivo de datos consolidado se guardará en:**
-`_data/datos_consolidado.RData`.
+---
 
-Este archivo contendrá información del proyecto **3500 registros**.
+## 🧪 Datos
 
-🔍 Los resultados generados se pueden ver localmente en el `index.html` o en línea aquí: [🌐 Proyecto en GitHub Pages](https://gastonnina.github.io/miadas_M03_proyecto)
+Los datos provienen de archivos `.csv` y `.feather` ubicados en la carpeta `_data`. Para optimizar el rendimiento, el script utiliza archivos en formato **Feather**.
+
+Si solo tienes los `.csv`, puedes convertirlos a `.feather` con este ejemplo:
+
+```python
+import pandas as pd
+df = pd.read_csv("_data/clientes.csv", sep=";")
+df.to_feather("_data/clientes.feather")
+```
+
+---
+
+## 📊 Funcionalidades del Dashboard
+
+- Filtros por departamento, año, profesión, cliente y rango de montos
+- Indicadores clave (total movimientos, monto promedio, cuentas activas, etc.)
+- Visualizaciones en pestañas:
+  - Por ubicación geográfica
+  - Por tiempo
+  - Por cliente
+
+---
+
+## 📦 Docker (opcional)
+
+Si deseas ejecutar en contenedor:
+
+```bash
+docker build -t cooperativa-dashboard .
+docker run -p 8050:8050 cooperativa-dashboard
+```
+
+---
+
+## 🧠 Créditos
+
+Este proyecto fue desarrollado como parte del curso de Ciencia de Datos para apoyar el análisis de datos simulados de una cooperativa minera.

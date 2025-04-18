@@ -1,0 +1,20 @@
+[project]
+name = "cooperativa-dashboard"
+version = "0.1.0"
+description = "Dashboard interactivo en tiempo real para análisis financiero de una cooperativa minera"
+authors = [
+    {name = "Paolo Ramos Mendez"},
+    {name = "Gaston Nina Sossa"}
+]
+dependencies = [
+    "pandas>=2.0",
+    "dash>=2.0",
+    "plotly>=5.0",
+    "pyarrow>=13.0",
+    "numpy>=1.24",
+    "faker>=19.0"
+]
+requires-python = ">=3.9"
+
+[tool.pdm]
+package-type = "application"

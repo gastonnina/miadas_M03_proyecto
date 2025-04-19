@@ -38,42 +38,61 @@ app.layout = html.Div([
     html.H1("📊 Dashboard Cooperativa Minera", style={"textAlign": "center"}),
 
     html.Div([
-        html.Label("🏢 Departamento:"),
-        dcc.Dropdown(
-            options=[{"label": d, "value": d} for d in departamentos_disponibles],
-            id="filtro_departamento",
-            multi=True
-        ),
-        html.Label("📅 Año:"),
-        dcc.Dropdown(
-            options=[{"label": str(a), "value": a} for a in anios_disponibles],
-            id="filtro_anio",
-            multi=True
-        ),
-        html.Label("👷‍♂️ Profesión:"),
-        dcc.Dropdown(
-            options=[{"label": p, "value": p} for p in profesiones_disponibles],
-            id="filtro_profesion",
-            multi=True
-        ),
-        html.Label("🔢 Rango de Monto:"),
-        dcc.RangeSlider(
-            id="filtro_monto",
-            min=monto_min,
-            max=monto_max,
-            step=10,
-            marks=None,
-            tooltip={"placement": "bottom", "always_visible": True}
-        ),
-        html.Label("🔍 Cliente:"),
-        dcc.Dropdown(
-            options=[{"label": n, "value": n} for n in clientes_disponibles],
-            id="filtro_cliente",
-            multi=True
-        ),
-        html.Br(),
-        html.Button("🔄 Resetear Filtros", id="reset_btn", n_clicks=0)
-    ], style={"width": "80%", "margin": "auto"}),
+        html.Div([
+            html.Label("🏢 Departamento:"),
+            dcc.Dropdown(
+                options=[{"label": d, "value": d} for d in departamentos_disponibles],
+                id="filtro_departamento",
+                value=[],
+                multi=True
+            )
+        ], style={"flex": "1", "padding": "10px"}),
+
+        html.Div([
+            html.Label("📅 Año:"),
+            dcc.Dropdown(
+                options=[{"label": str(a), "value": a} for a in anios_disponibles],
+                id="filtro_anio",
+                multi=True
+            )
+        ], style={"flex": "1", "padding": "10px"}),
+
+        html.Div([
+            html.Label("👷‍♂️ Profesión:"),
+            dcc.Dropdown(
+                options=[{"label": p, "value": p} for p in profesiones_disponibles],
+                id="filtro_profesion",
+                multi=True
+            )
+        ], style={"flex": "1", "padding": "10px"}),
+
+        html.Div([
+            html.Label("🔢 Rango de Monto:"),
+            dcc.RangeSlider(
+                id="filtro_monto",
+                min=monto_min,
+                max=monto_max,
+                step=10,
+                value=[monto_min, monto_max],  # Valor por defecto
+                marks=None,
+                tooltip={"placement": "bottom", "always_visible": True}
+            )
+        ], style={"flex": "2", "padding": "10px"}),
+
+        html.Div([
+            html.Label("🔍 Cliente:"),
+            dcc.Dropdown(
+                options=[{"label": n, "value": n} for n in clientes_disponibles],
+                id="filtro_cliente",
+                multi=True
+            )
+        ], style={"flex": "2", "padding": "10px"}),
+
+        html.Div([
+            html.Br(),
+            html.Button("🔄 Resetear Filtros", id="reset_btn", n_clicks=0)
+        ], style={"flex": "1", "padding": "10px", "display": "flex", "alignItems": "center"})
+    ], style={"display": "flex", "flexWrap": "wrap", "justifyContent": "space-around", "margin": "20px auto", "width": "90%"}),
 
     html.Div([
         html.Div(id="kpi_1", className="card"), html.Div(id="kpi_2", className="card"),
@@ -111,7 +130,8 @@ app.layout = html.Div([
         Output("filtro_monto", "value"),
         Output("filtro_cliente", "value")
     ],
-    Input("reset_btn", "n_clicks")
+    Input("reset_btn", "n_clicks"),
+    prevent_initial_call=False
 )
 def reset_filters(n_clicks):
     if ctx.triggered_id == "reset_btn":
@@ -134,38 +154,50 @@ def reset_filters(n_clicks):
     ]
 )
 def update_dashboard(departamentos, anios, profesiones, monto_range, clientes):
-    dff = df.copy()
-    if departamentos:
-        dff = dff[dff["DEPARTAMENTO"].isin(departamentos)]
-    if anios:
-        dff = dff[dff["ANIO"].isin(anios)]
-    if profesiones:
-        dff = dff[dff["PROFESION"].isin(profesiones)]
-    if monto_range:
-        dff = dff[(dff["MONTO"] >= monto_range[0]) & (dff["MONTO"] <= monto_range[1])]
-    if clientes:
-        dff = dff[dff["NOMBRES"].isin(clientes)]
+    try:
+        print("\n=== CALLBACK EJECUTADO ===")
+        print("Filtro - Departamento:", departamentos)
+        print("Filtro - Año:", anios)
+        print("Filtro - Profesión:", profesiones)
+        print("Filtro - Rango Monto:", monto_range)
+        print("Filtro - Cliente:", clientes)
+        dff = df.copy()
+        print("→ Total registros iniciales:", dff.shape[0])
 
-    if dff.empty:
-        return ["Sin datos"] * 6 + [px.scatter(title="Sin datos")] * 6
+        if departamentos:
+            dff = dff[dff["DEPARTAMENTO"].isin(departamentos)]
+        if anios:
+            dff = dff[dff["ANIO"].isin(anios)]
+        if profesiones:
+            dff = dff[dff["PROFESION"].isin(profesiones)]
+        if monto_range and monto_range[0] is not None and monto_range[1] is not None:
+            dff = dff[(dff["MONTO"] >= monto_range[0]) & (dff["MONTO"] <= monto_range[1])]
+        if clientes:
+            dff = dff[dff["NOMBRES"].isin(clientes)]
 
-    kpis = [
-        html.Div(f"📌 Total Movimientos: {dff.shape[0]}"),
-        html.Div(f"💰 Total Monto: Bs {dff['MONTO'].sum():,.2f}"),
-        html.Div(f"📊 Monto Promedio: Bs {dff['MONTO'].mean():,.2f}"),
-        html.Div(f"📂 Cuentas Activas: {dff['CUENTA'].nunique()}"),
-        html.Div(f"👤 Clientes Únicos: {dff['CARNET'].nunique()}"),
-        html.Div(f"💎 Monto Máximo: Bs {dff['MONTO'].max():,.2f}")
-    ]
+        if dff.empty:
+            return ["Sin datos"] * 6 + [px.scatter(title="Sin datos")] * 6
 
-    fig1 = px.bar(dff.groupby("DEPARTAMENTO")["MONTO"].sum().reset_index(), x="DEPARTAMENTO", y="MONTO", title="Monto por Departamento")
-    fig2 = px.histogram(dff, x="ANIO", y="MONTO", histfunc="sum", title="Monto por Año")
-    fig3 = px.box(dff, x="DEPARTAMENTO", y="MONTO", title="Distribución de Montos por Departamento")
-    fig4 = px.histogram(dff, x="DEPARTAMENTO", title="Cantidad de Movimientos por Departamento")
-    fig5 = px.bar(dff.groupby("DEPARTAMENTO")["CARNET"].nunique().reset_index(), x="DEPARTAMENTO", y="CARNET", title="Clientes por Departamento")
-    fig6 = px.pie(dff, names="DEPARTAMENTO", values="MONTO", title="Participación del Monto por Departamento")
+        kpis = [
+            html.Div(f"📌 Total Movimientos: {dff.shape[0]}"),
+            html.Div(f"💰 Total Monto: Bs {dff['MONTO'].sum():,.2f}"),
+            html.Div(f"📊 Monto Promedio: Bs {dff['MONTO'].mean():,.2f}"),
+            html.Div(f"📂 Cuentas Activas: {dff['CUENTA'].nunique()}"),
+            html.Div(f"👤 Clientes Únicos: {dff['CARNET'].nunique()}"),
+            html.Div(f"💎 Monto Máximo: Bs {dff['MONTO'].max():,.2f}")
+        ]
 
-    return (*kpis, fig1, fig2, fig3, fig4, fig5, fig6)
+        fig1 = px.bar(dff.groupby("DEPARTAMENTO")["MONTO"].sum().reset_index(), x="DEPARTAMENTO", y="MONTO", title="Monto por Departamento")
+        fig2 = px.histogram(dff, x="ANIO", y="MONTO", histfunc="sum", title="Monto por Año")
+        fig3 = px.box(dff, x="DEPARTAMENTO", y="MONTO", title="Distribución de Montos por Departamento")
+        fig4 = px.histogram(dff, x="DEPARTAMENTO", title="Cantidad de Movimientos por Departamento")
+        fig5 = px.bar(dff.groupby("DEPARTAMENTO")["CARNET"].nunique().reset_index(), x="DEPARTAMENTO", y="CARNET", title="Clientes por Departamento")
+        fig6 = px.pie(dff, names="DEPARTAMENTO", values="MONTO", title="Participación del Monto por Departamento")
+
+        return (*kpis, fig1, fig2, fig3, fig4, fig5, fig6)
+    except Exception as e:
+        print("❌ Error en callback:", str(e))
+        return ["Error"] * 6 + [px.scatter(title="Error")] * 6
 
 if __name__ == "__main__":
     app.run(debug=True)

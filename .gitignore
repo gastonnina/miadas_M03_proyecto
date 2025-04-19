@@ -5,6 +5,7 @@ __pycache__/
 .pdm.lock
 .env
 .venv/
+venv/
 .idea/
 .vscode/
 .DS_Store

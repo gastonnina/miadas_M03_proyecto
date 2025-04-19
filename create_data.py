@@ -31,11 +31,24 @@ df_profesiones = pd.DataFrame({
 n_clientes = 15000
 carnets = np.random.choice(range(2000000, 6000000), n_clientes, replace=False)
 
+# Pesos para desbalancear departamentos (SANTA CRUZ tendrá más, PANDO menos)
+pesos_deptos = [
+    0.04,  # CHUQUISACA
+    0.22,  # LA PAZ       ← más clientes
+    0.06,  # COCHABAMBA
+    0.18,  # ORURO        ← más clientes
+    0.25,  # POTOSÍ       ← más clientes
+    0.04,  # TARIJA
+    0.10,  # SANTA CRUZ
+    0.06,  # BENI
+    0.05   # PANDO
+]
+
 df_clientes = pd.DataFrame({
     "CARNET": carnets,
     "NOMBRES": [fake.name() for _ in range(n_clientes)],
     "CODPROF": np.random.choice(df_profesiones["CODPROF"], n_clientes),
-    "CODEPTO": np.random.choice(df_departamentos["CODEPTO"], n_clientes),
+    "CODEPTO": np.random.choice(df_departamentos["CODEPTO"], n_clientes, p=pesos_deptos),
     "GENERO": np.random.choice(["M", "F"], n_clientes),
     "FECHA_INGRESO": pd.to_datetime(np.random.choice(pd.date_range("2000-01-01", "2022-12-31"), n_clientes)),
     "TIPO_SOCIO": np.random.choice(["ACTIVO", "PASIVO", "JUBILADO"], n_clientes),
@@ -73,22 +86,22 @@ df_movimientos = pd.DataFrame({
     "TIPO_MOVIMIENTO": np.random.choice(["DEPÓSITO", "RETIRO", "PAGO", "TRANSFERENCIA"], n_movs),
     "CANAL": np.random.choice(["CAJA", "APP", "WEB", "CAJERO", "TRANSFERENCIA"], n_movs),
     "USUARIO_REGISTRO": [f"USR{random.randint(1001,1050)}" for _ in range(n_movs)],
-    "FECHA_REGISTRO": pd.to_datetime(np.random.choice(pd.date_range("2022-01-01", "2025-04-01", freq='H'), n_movs)),
+    "FECHA_REGISTRO": pd.to_datetime(np.random.choice(pd.date_range("2022-01-01", "2025-04-01", freq='h'), n_movs)),
     "OBSERVACION": np.random.choice(["OK", "Sin observaciones", "Revisado", "Validado"], n_movs)
 })
 
 # --- (Opcional) Guardar a CSV
-df_clientes.to_csv("/content/clientes.csv", index=False)
-df_cuentas.to_csv("/content/cuentas.csv", index=False)
-df_movimientos.to_csv("/content/movimientos.csv", index=False)
-df_departamentos.to_csv("/content/departamentos.csv", index=False)
-df_profesiones.to_csv("/content/profesiones.csv", index=False)
+df_clientes.to_csv("_data/clientes.csv", index=False)
+df_cuentas.to_csv("_data/cuentas.csv", index=False)
+df_movimientos.to_csv("_data/movimientos.csv", index=False)
+df_departamentos.to_csv("_data/departamentos.csv", index=False)
+df_profesiones.to_csv("_data/profesiones.csv", index=False)
 print("Todos los archivos fueron guardados en formato CSV.")
 
-df_clientes.to_feather("/content/clientes.feather")
-df_cuentas.to_feather("/content/cuentas.feather")
-df_movimientos.to_feather("/content/movimientos.feather")
-df_departamentos.to_feather("/content/departamentos.feather")
-df_profesiones.to_feather("/content/profesiones.feather")
+df_clientes.to_feather("_data/clientes.feather")
+df_cuentas.to_feather("_data/cuentas.feather")
+df_movimientos.to_feather("_data/movimientos.feather")
+df_departamentos.to_feather("_data/departamentos.feather")
+df_profesiones.to_feather("_data/profesiones.feather")
 
 print("Todos los archivos fueron guardados en formato Feather.")

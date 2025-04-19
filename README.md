@@ -72,7 +72,7 @@ pdm install
 ## 🚀 Ejecución
 
 ```bash
-pdm run app.py
+pdm run dashboard.py
 ```
 
 Esto abrirá una instancia local del dashboard en:  

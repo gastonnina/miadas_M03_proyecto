@@ -168,4 +168,4 @@ def update_dashboard(departamentos, anios, profesiones, monto_range, clientes):
     return (*kpis, fig1, fig2, fig3, fig4, fig5, fig6)
 
 if __name__ == "__main__":
-    app.run_server(debug=True)
+    app.run(debug=True)

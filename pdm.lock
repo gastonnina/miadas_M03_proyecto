@@ -5,7 +5,7 @@
 groups = ["default"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:5185deb731beddc86223393c8caef75abd23f1547132df25165318a366beb2df"
+content_hash = "sha256:989a172001c6cacc4a017c007d79108bfdbecd6210bb37c1da7f40e610aedf65"
 
 [[metadata.targets]]
 requires_python = ">=3.12"
@@ -366,6 +366,17 @@ dependencies = [
 files = [
     {file = "plotly-6.0.1-py3-none-any.whl", hash = "sha256:4714db20fea57a435692c548a4eb4fae454f7daddf15f8d8ba7e1045681d7768"},
     {file = "plotly-6.0.1.tar.gz", hash = "sha256:dd8400229872b6e3c964b099be699f8d00c489a974f2cfccfad5e8240873366b"},
+]
+
+[[package]]
+name = "polyline"
+version = "2.0.2"
+requires_python = ">=3.7"
+summary = "A Python implementation of Google's Encoded Polyline Algorithm Format."
+groups = ["default"]
+files = [
+    {file = "polyline-2.0.2-py3-none-any.whl", hash = "sha256:389655c893bdabf2863c6aaa49490cf83dcdcec86ae715f67044ee98be57bef5"},
+    {file = "polyline-2.0.2.tar.gz", hash = "sha256:10541e759c5fd51f746ee304e9af94744089a4055b6257b293b3afd1df64e369"},
 ]
 
 [[package]]

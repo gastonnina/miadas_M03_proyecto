@@ -11,7 +11,7 @@ def layout_tab_rutas():
     )))
 
     return dcc.Tab(label='🛣️ Rutas por Departamento', children=[
-        html.H3("Filtrar rutas enriquecidas por origen y destino"),
+        html.H3("Filtrar rutas por origen y destino"),
         html.Div([
             html.Label("Departamento de Origen:"),
             dcc.Dropdown(

@@ -6,7 +6,6 @@ import polyline
 
 API_KEY = "AIzaSyBZpi6RTWeNiFrc680OGFicJHDTTvZArsM"
 
-
 def generar_mapa_rutas_avanzado(rutas):
     mapa = folium.Map(location=[-17.5, -66.0], zoom_start=6)
 

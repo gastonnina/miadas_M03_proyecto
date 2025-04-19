@@ -14,7 +14,7 @@ def layout_filtros(
                 value=[],
                 multi=True
             )
-        ], style={"flex": "1", "padding": "10px"}),
+        ], className="filter-item"),
 
         html.Div([
             html.Label("📅 Año:"),
@@ -23,7 +23,7 @@ def layout_filtros(
                 id="filtro_anio",
                 multi=True
             )
-        ], style={"flex": "1", "padding": "10px"}),
+        ], className="filter-item"),
 
         html.Div([
             html.Label("👷‍♂️ Profesión:"),
@@ -32,7 +32,7 @@ def layout_filtros(
                 id="filtro_profesion",
                 multi=True
             )
-        ], style={"flex": "1", "padding": "10px"}),
+        ], className="filter-item"),
 
         html.Div([
             html.Label("🔢 Rango de Monto:"),
@@ -45,7 +45,7 @@ def layout_filtros(
                 marks=None,
                 tooltip={"placement": "bottom", "always_visible": True}
             )
-        ], style={"flex": "2", "padding": "10px"}),
+        ], className="filter-item"),
 
         html.Div([
             html.Label("🔍 Cliente:"),
@@ -54,10 +54,9 @@ def layout_filtros(
                 id="filtro_cliente",
                 multi=True
             )
-        ], style={"flex": "2", "padding": "10px"}),
+        ], className="filter-item"),
 
         html.Div([
-            html.Br(),
-            html.Button("🔄 Resetear Filtros", id="reset_btn", n_clicks=0)
-        ], style={"flex": "1", "padding": "10px", "display": "flex", "alignItems": "center"})
-    ], style={"display": "flex", "flexWrap": "wrap", "justifyContent": "space-around", "margin": "20px auto", "width": "90%"})
+            html.Button("🔄 Limpiar Filtros", id="reset_btn", n_clicks=0),
+        ], className="filter-item")
+    ], className="filter-container")

@@ -10,7 +10,7 @@ def layout_kpis():
             html.Div(id="kpi_1", className="card"), html.Div(id="kpi_2", className="card"),
             html.Div(id="kpi_3", className="card"), html.Div(id="kpi_4", className="card"),
             html.Div(id="kpi_5", className="card"), html.Div(id="kpi_6", className="card")
-        ], style={"display": "flex", "justifyContent": "space-around", "padding": "20px"}),
+        ], className="kpi-container"),
 
         dcc.Tabs([
             dcc.Tab(label="📍 Por Ubicación", children=[
@@ -31,6 +31,6 @@ def layout_kpis():
                     dcc.Tab(label="📊 Distribución de Montos", children=[dcc.Graph(id="graf_3")])
                 ])
             ]),
-            layout_tab_rutas()
+            dcc.Tab(label="🛣️ Rutas por Departamento", children=[layout_tab_rutas()])
         ])
     ])

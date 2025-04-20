@@ -5,6 +5,26 @@ body {
     margin: 0;
     padding: 0;
 }
+.kpi-container {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr; /* móvil por defecto */
+    padding: 1rem;
+}
+
+@media (min-width: 600px) {
+    /* Tablet */
+    .kpi-container {
+      grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    /* Desktop */
+    .kpi-container {
+      grid-template-columns: repeat(3, 1fr);
+    }
+}
 
 /* === KPI Cards === */
 .card {

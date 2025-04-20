@@ -11,7 +11,7 @@ def layout_filtros(
             dcc.Dropdown(
                 options=[{"label": d, "value": d} for d in departamentos],
                 id="filtro_departamento",
-                value=[],
+                value=None,
                 multi=True
             )
         ], className="filter-item"),
@@ -21,6 +21,7 @@ def layout_filtros(
             dcc.Dropdown(
                 options=[{"label": str(a), "value": a} for a in anios],
                 id="filtro_anio",
+                value=None,
                 multi=True
             )
         ], className="filter-item"),
@@ -30,6 +31,7 @@ def layout_filtros(
             dcc.Dropdown(
                 options=[{"label": p, "value": p} for p in profesiones],
                 id="filtro_profesion",
+                value=None,
                 multi=True
             )
         ], className="filter-item"),
@@ -52,6 +54,7 @@ def layout_filtros(
             dcc.Dropdown(
                 options=[{"label": n, "value": n} for n in clientes],
                 id="filtro_cliente",
+                value=None,
                 multi=True
             )
         ], className="filter-item"),

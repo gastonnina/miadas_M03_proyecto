@@ -19,8 +19,9 @@ def registrar_callbacks_kpis(app, df, monto_min, monto_max):
         prevent_initial_call=False
     )
     def reset_filters(n_clicks):
-        if ctx.triggered_id == "reset_btn":
-            return None, None, None, [monto_min, monto_max], None
+        print("🚨 reset_filters ejecutado con n_clicks =", n_clicks)
+        # if ctx.triggered_id == "reset_btn":
+        return None, None, None, [monto_min, monto_max], None
         raise PreventUpdate
 
     @app.callback(
@@ -39,6 +40,12 @@ def registrar_callbacks_kpis(app, df, monto_min, monto_max):
         ]
     )
     def update_dashboard(departamentos, anios, profesiones, monto_range, clientes):
+        print("\n=== CALLBACK EJECUTADO ===")
+        print("Filtro - Departamento:", departamentos)
+        print("Filtro - Año:", anios)
+        print("Filtro - Profesión:", profesiones)
+        print("Filtro - Rango Monto:", monto_range)
+        print("Filtro - Cliente:", clientes)
         try:
             dff = df.copy()
 

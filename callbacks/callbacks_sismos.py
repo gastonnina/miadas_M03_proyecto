@@ -9,13 +9,16 @@ from dash import Output, Input, html, dcc, State
 def registrar_callbacks_sismos(app):
 
     @app.callback(
-    Output("contenedor-sismos-tiempo-real", "children"),
-    Input("intervalo-sismos", "n_intervals"),
-    Input("filtro-magnitud", "value"),
-    Input("filtro-tiempo", "value"),
-    Input("filtro-region", "value")
+        Output("filtro-magnitud", "value"),
+        Output("filtro-tiempo", "value"),
+        Output("filtro-region", "value"),
+        Output("contenedor-sismos-tiempo-real", "children"),
+        Input("intervalo-sismos", "n_intervals"),
+        Input("filtro-magnitud", "value"),
+        Input("filtro-tiempo", "value"),
+        Input("filtro-region", "value"),
+
     )
-    
     def actualizar_sismos(n, magnitud_minima, rango_tiempo, region):
         try:
             print(f"🔁 Ejecutando callback de sismos (intervalo {n})")
@@ -52,24 +55,22 @@ def registrar_callbacks_sismos(app):
             ])
 
             sismos = sismos.dropna(subset=["Latitud", "Longitud", "Magnitud"])
-
-            total_original = sismos.shape[0]  # total antes de filtros
-
-            # Guardar copia sin filtros
+            total_original = sismos.shape[0]
             sismos_sin_filtros = sismos.copy()
 
-            # Filtro por magnitud
+            
             if magnitud_minima is not None:
                 sismos = sismos[sismos["Magnitud"] >= magnitud_minima]
 
-            # Filtro por región (texto libre en campo "Lugar")
             if region:
                 sismos = sismos[sismos["Lugar"].str.contains(region, case=False, na=False)]
 
             print("Sismos válidos cargados tras filtros:", sismos.shape[0])
 
+            fallback_aplicado = False
             if sismos.empty:
                 sismos = sismos_sin_filtros
+                fallback_aplicado = True
                 print("⚠️ No hay datos con filtros, mostrando todos.")
 
             fig_mapa = px.scatter_geo(
@@ -94,13 +95,25 @@ def registrar_callbacks_sismos(app):
                 title="Magnitudes recientes de los últimos sismos"
             )
 
-            mensaje_fallback = html.P("⚠️ No se encontraron coincidencias con los filtros seleccionados. Mostrando todos los datos disponibles.") if sismos.shape[0] < total_original else None
-            return html.Div([
+            mensaje_fallback = html.P(
+                "⚠️ No se encontraron coincidencias con los filtros seleccionados. Mostrando todos los datos disponibles.",
+                style={"color": "#856404", "backgroundColor": "#fff3cd", "padding": "10px", "borderRadius": "5px"}
+            ) if fallback_aplicado else None
+
+            contador = html.P(f"🔢 Mostrando {sismos.shape[0]} sismos.")
+
+            contenido = html.Div([
                 mensaje_fallback,
+                contador,
                 dcc.Graph(figure=fig_mapa),
                 dcc.Graph(figure=fig_barras)
             ])
 
+            from dash import no_update
+            return no_update, no_update, no_update, contenido
+                
+
         except Exception as e:
             print("❌ Error en callback de sismos:", str(e))
-            return html.Div(f"Error al obtener datos de sismos: {str(e)}")
+            from dash import no_update
+            return html.Div(f"Error al obtener datos de sismos: {str(e)}"), no_update, no_update, no_update

@@ -5,24 +5,28 @@ body {
     margin: 0;
     padding: 0;
 }
+
 .kpi-container {
     display: grid;
     gap: 1rem;
-    grid-template-columns: 1fr; /* móvil por defecto */
+    grid-template-columns: 1fr;
+    /* móvil por defecto */
     padding: 1rem;
 }
 
 @media (min-width: 600px) {
+
     /* Tablet */
     .kpi-container {
-      grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
 @media (min-width: 1024px) {
+
     /* Desktop */
     .kpi-container {
-      grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(3, 1fr);
     }
 }
 
@@ -56,10 +60,10 @@ body {
     top: 0;
     z-index: 999;
     background-color: white;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.filter-container > div {
+.filter-container>div {
     flex: 1;
     min-width: 200px;
     max-width: 280px;
@@ -91,6 +95,22 @@ button#reset_btn:hover {
     padding: 10px;
 }
 
+.tab-content {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+/* Espaciado entre filtros */
+.tab-content label {
+    display: block;
+    margin-top: 20px;
+    font-weight: bold;
+}
+
+.tab-content .dash-dropdown {
+    margin-bottom: 10px;
+}
+
 /* === Iframes (mapas) === */
 iframe {
     width: 100%;
@@ -111,6 +131,7 @@ iframe {
         font-size: 14px;
         padding: 16px;
     }
+
     .filter-container {
         flex-direction: column;
         align-items: stretch;
@@ -122,7 +143,7 @@ iframe {
     background-color: #ffffff;
     padding: 15px;
     border-radius: 10px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
     flex: 1;
     min-width: 240px;
     max-width: 300px;
@@ -144,7 +165,7 @@ iframe {
     color: white;
     padding: 1rem 1.5rem;
     border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     width: 250px;
     text-align: center;
 }

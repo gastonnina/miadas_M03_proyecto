@@ -30,7 +30,6 @@ def layout_kpis():
                     dcc.Tab(label="📦 Clientes por Departamento", children=[dcc.Graph(id="graf_5")]),
                     dcc.Tab(label="📊 Distribución de Montos", children=[dcc.Graph(id="graf_3")])
                 ])
-            ]),
-            dcc.Tab(label="🛣️ Rutas por Departamento", children=[layout_tab_rutas()])
+            ])
         ])
     ])

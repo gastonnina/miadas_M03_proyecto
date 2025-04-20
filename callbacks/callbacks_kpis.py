@@ -72,11 +72,21 @@ def registrar_callbacks_kpis(app, df, monto_min, monto_max):
                 html.Div(f"\ud83d\udc8e Monto Máximo: Bs {dff['MONTO'].max():,.2f}")
             ]
 
-            fig1 = px.bar(dff.groupby("DEPARTAMENTO")["MONTO"].sum().reset_index(), x="DEPARTAMENTO", y="MONTO", title="Monto por Departamento")
-            fig2 = px.histogram(dff, x="ANIO", y="MONTO", histfunc="sum", title="Monto por Año")
-            fig3 = px.box(dff, x="DEPARTAMENTO", y="MONTO", title="Distribución de Montos por Departamento")
-            fig4 = px.histogram(dff, x="DEPARTAMENTO", title="Cantidad de Movimientos por Departamento")
-            fig5 = px.bar(dff.groupby("DEPARTAMENTO")["CARNET"].nunique().reset_index(), x="DEPARTAMENTO", y="CARNET", title="Clientes por Departamento")
+            fig1 = px.bar(
+                dff.groupby("DEPARTAMENTO")["MONTO"].sum().reset_index().sort_values(by="MONTO", ascending=False),
+                x="DEPARTAMENTO",
+                y="MONTO",
+                title="Monto por Departamento",
+                color="DEPARTAMENTO"
+            )
+            fig2 = px.histogram(dff, x="ANIO", y="MONTO", histfunc="sum", color="DEPARTAMENTO", title="Monto por Año")
+            fig3 = px.box(dff, x="DEPARTAMENTO", y="MONTO", title="Distribución de Montos por Departamento", color="DEPARTAMENTO")
+            fig4 = px.histogram(dff, x="DEPARTAMENTO", title="Cantidad de Movimientos por Departamento", color="DEPARTAMENTO")
+            fig5 = px.bar(  dff.groupby("DEPARTAMENTO")["CARNET"]
+                .nunique()
+                .reset_index()
+                .sort_values(by="CARNET", ascending=False),
+                x="DEPARTAMENTO", y="CARNET", title="Clientes por Departamento", color="DEPARTAMENTO")
             fig6 = px.pie(dff, names="DEPARTAMENTO", values="MONTO", title="Participación del Monto por Departamento")
 
             return (*kpis, fig1, fig2, fig3, fig4, fig5, fig6)

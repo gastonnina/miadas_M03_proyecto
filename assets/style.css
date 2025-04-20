@@ -130,3 +130,21 @@ iframe {
     flex-direction: column;
     gap: 6px;
 }
+
+.card-container-clima {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: space-evenly;
+    margin-bottom: 2rem;
+}
+
+.card-clima {
+    background-color: #1e1e2f;
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    width: 250px;
+    text-align: center;
+}

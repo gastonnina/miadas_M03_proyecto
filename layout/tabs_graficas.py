@@ -1,5 +1,3 @@
-# layout/tabs_kpis.py
-
 from dash import dcc, html
 
 

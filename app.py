@@ -6,6 +6,7 @@ from layout.tabs_kpis import layout_kpis
 from layout.tabs_graficas import layout_graficas
 from layout.tabs_rutas import layout_tab_rutas
 from layout.tabs_tiempo_real import layout_tab_monitoreo_sismos
+from layout.tabs_clima_real import layout_tab_clima
 from layout.tabs_creditos import layout_creditos
 from utils.transformaciones import cargar_dataset_completo
 from callbacks.callbacks_kpis import registrar_callbacks_kpis
@@ -46,9 +47,7 @@ app.layout = html.Div([
         dcc.Tab(label="⏱ Tiempo Real", children=[
             dcc.Tabs([
                 layout_tab_monitoreo_sismos(),
-                dcc.Tab(label="📊 Historial", children=[
-                    html.H4("Historial de datos en tiempo real")
-                ])
+                layout_tab_clima(),
             ])
         ]),
         layout_creditos(),

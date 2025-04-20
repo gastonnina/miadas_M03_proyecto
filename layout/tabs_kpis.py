@@ -1,8 +1,4 @@
-# layout/tabs_kpis.py
-
 from dash import dcc, html
-from layout.tabs_rutas import layout_tab_rutas
-
 
 def layout_kpis():
     return  dcc.Tab(label="📊 KPIs", children=[

@@ -1,7 +1,97 @@
 import pandas as pd
+import requests
+import polyline
+import folium
+import json
+import polyline
 import plotly.express as px
 from dash import Dash, dcc, html, Input, Output, ctx, no_update
 from dash.exceptions import PreventUpdate
+
+# Reemplazá con tu API Key real
+API_KEY = "AIzaSyBZpi6RTWeNiFrc680OGFicJHDTTvZArsM"
+
+# Cargar rutas
+def cargar_rutas(path='_data/rutas_mineras.json'):
+    with open(path, 'r') as f:
+        rutas = json.load(f)
+    return rutas
+
+def generar_mapa_rutas_multiples(rutas):
+    # Centrar el mapa en Bolivia
+    mapa = folium.Map(location=[-17.5, -66.0], zoom_start=6)
+
+    for ruta in rutas:
+        url = (
+            f"https://maps.googleapis.com/maps/api/directions/json?"
+            f"origin={ruta['origen']}&destination={ruta['destino']}&key={API_KEY}"
+        )
+        if ruta.get('waypoints'):
+            url += f"&waypoints={ruta['waypoints']}"
+
+        response = requests.get(url)
+        data = response.json()
+
+        if data['status'] == 'OK':
+            puntos = polyline.decode(data['routes'][0]['overview_polyline']['points'])
+            distancia = data['routes'][0]['legs'][0]['distance']['text']
+            duracion = data['routes'][0]['legs'][0]['duration']['text']
+            tooltip_text = f"{ruta['nombre']}<br>Distancia: {distancia}<br>Duración: {duracion}"
+
+            folium.PolyLine(
+                locations=puntos,
+                color=ruta.get('color', 'blue'),
+                weight=5,
+                tooltip=tooltip_text
+            ).add_to(mapa)
+
+            # Icono en origen: mina
+            folium.Marker(
+                location=puntos[0],
+                tooltip="Origen: Mina",
+                icon=folium.Icon(icon="industry", prefix="fa", color="darkred")
+            ).add_to(mapa)
+
+            # Icono en destino: camión
+            folium.Marker(
+                location=puntos[-1],
+                tooltip="Destino: Transporte",
+                icon=folium.Icon(icon="truck", prefix="fa", color="green")
+            ).add_to(mapa)
+        else:
+            print(f"Error en la ruta {ruta['nombre']}: {data['status']}")
+
+    return mapa._repr_html_()
+
+# Tab rutas filtradas
+def tab_rutas_filtradas():
+    rutas_json = cargar_rutas('_data/rutas_mineras.json')
+    departamentos = sorted(list(set(
+        ruta["departamento_origen"] for ruta in rutas_json
+    ).union(
+        ruta["departamento_destino"] for ruta in rutas_json
+    )))
+
+    return dcc.Tab(label='🛣️ Rutas por Departamento', children=[
+        html.H3("Filtrar rutas enriquecidas por origen y destino"),
+        html.Div([
+            html.Label("Departamento de Origen:"),
+            dcc.Dropdown(
+                id='filtro-origen-json',
+                options=[{'label': d, 'value': d} for d in departamentos],
+                placeholder="Selecciona origen"
+            ),
+            html.Label("Departamento de Destino:"),
+            dcc.Dropdown(
+                id='filtro-destino-json',
+                options=[{'label': d, 'value': d} for d in departamentos],
+                placeholder="Selecciona destino"
+            ),
+        ], style={'width': '40%', 'margin-bottom': '20px'}),
+
+        html.Div(id='contenedor-mapa-json')
+    ])
+
 
 # Cargar los dataframes desde archivos feather
 df_clientes = pd.read_feather("_data/clientes.feather")
@@ -118,7 +208,8 @@ app.layout = html.Div([
                 dcc.Tab(label="📦 Clientes por Departamento", children=[dcc.Graph(id="graf_5")]),
                 dcc.Tab(label="📊 Distribución de Montos", children=[dcc.Graph(id="graf_3")])
             ])
-        ])
+        ]),
+        tab_rutas_filtradas(),
     ])
 ])
 
@@ -199,5 +290,29 @@ def update_dashboard(departamentos, anios, profesiones, monto_range, clientes):
         print("❌ Error en callback:", str(e))
         return ["Error"] * 6 + [px.scatter(title="Error")] * 6
 
+@app.callback(
+    Output('contenedor-mapa-json', 'children'),
+    Input('filtro-origen-json', 'value'),
+    Input('filtro-destino-json', 'value')
+)
+def actualizar_mapa_json(origen, destino):
+    rutas = cargar_rutas('_data/rutas_mineras.json')
+
+    # Mostrar todas si no hay filtros
+    if origen is None and destino is None:
+        rutas_filtradas = rutas
+    else:
+        rutas_filtradas = [
+            r for r in rutas
+            if (origen is None or r["departamento_origen"] == origen)
+            and (destino is None or r["departamento_destino"] == destino)
+        ]
+
+    if not rutas_filtradas:
+        return html.Div("No se encontraron rutas con los filtros seleccionados.")
+
+    html_mapa = generar_mapa_rutas_multiples(rutas_filtradas)
+    return html.Iframe(srcDoc=html_mapa, width='100%', height='600')
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, use_reloader=True)

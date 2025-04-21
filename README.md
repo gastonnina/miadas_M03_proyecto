@@ -154,6 +154,25 @@ docker run -p 8050:8050 cooperativa-dashboard
 
 ---
 
+
+---
+
+## 🔑 Configuración de la API Key
+
+Para que el módulo de **Rutas y Mapas** funcione correctamente, es necesario configurar una **clave de Google Maps API**.
+
+1. Abre el archivo `utils/mapas.py`.
+2. Ubica la línea donde se define la API Key, por ejemplo:
+
+```python
+API_KEY = "TU_API_KEY_AQUI"
+```
+
+3. Reemplaza `"TU_API_KEY_AQUI"` con tu propia clave generada desde [Google Cloud Console](https://console.cloud.google.com/).
+
+> ⚠️ **Importante:** No compartas tu clave en repositorios públicos. Se recomienda usar un archivo `.env` o variables de entorno para mayor seguridad en entornos de producción.
+
+
 ## 🧠 Créditos
 
 Este proyecto fue desarrollado como parte del curso de Ciencia de Datos aplicado a una cooperativa minera. Incluye módulos para análisis financiero, visualización de rutas y eventos sísmicos en tiempo real, utilizando Dash, Plotly y APIs públicas.

@@ -4,7 +4,7 @@ import folium
 import requests
 import polyline
 
-API_KEY = "AIzaSyBZpi6RTWeNiFrc680OGFicJHDTTvZArsM"
+API_KEY = "TU_API_KEY_DE_GOOGLE_MAPS"  # Reemplaza con tu API Key de Google Maps
 
 def generar_mapa_rutas_avanzado(rutas):
     mapa = folium.Map(location=[-17.5, -66.0], zoom_start=6)

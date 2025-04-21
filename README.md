@@ -1,14 +1,14 @@
 # 📊 Dashboard Interactivo en Tiempo Real – Cooperativa Minera ⛏️
 
 ## 🎯 Objetivo General
-Desarrollar un dashboard interactivo para visualizar y analizar datos financieros de una **cooperativa minera**, con filtros dinámicos y métricas clave.
+Desarrollar un dashboard interactivo para visualizar y analizar datos financieros y operativos de una **cooperativa minera**, con filtros dinámicos, mapas interactivos, análisis en tiempo real y métricas clave.
 
 ---
 
 ## 👥 Integrantes
 
-- Paolo Ramos Mendez  
-- Gaston Nina Sossa  
+- Paolo Ramos Mendez
+- Gaston Nina Sosa
 
 ---
 
@@ -16,22 +16,33 @@ Desarrollar un dashboard interactivo para visualizar y analizar datos financiero
 
 ```
 .
-├── dashboard.py                  # Aplicación principal Dash
-├── _data/
-│   ├── clientes.csv              # Datos de clientes
-│   ├── cuentas.csv               # Datos de cuentas
-│   ├── movimientos.csv           # Movimientos financieros
-│   ├── departamentos.csv         # Catálogo de departamentos
-│   ├── profesiones.csv           # Catálogo de profesiones
-│   ├── clientes.feather          # Versión Feather de los datos
-│   ├── cuentas.feather
-│   ├── movimientos.feather
-│   ├── departamentos.feather
-│   └── profesiones.feather
-├── Dockerfile                    # Imagen para despliegue en contenedor
-├── pyproject.toml                # Archivo de configuración PDM
-├── .gitignore                    # Archivos ignorados por Git
-└── README.md                     # Este archivo
+├── app.py                         # Aplicación principal Dash
+├── _data/                         # Datos en CSV y Feather
+│   ├── clientes.csv / .feather    # Datos de clientes
+│   ├── cuentas.csv / .feather     # Cuentas bancarias
+│   ├── movimientos.csv / .feather # Movimientos financieros
+│   ├── departamentos.csv/.feather # Catálogo de departamentos
+│   ├── profesiones.csv/.feather   # Catálogo de profesiones
+│   └── rutas_mineras.json         # Rutas entre ciudades mineras
+├── assets/
+│   └── styles.css                 # Estilos personalizados (CSS)
+├── layout/                        # Layouts modulares (tabs y filtros)
+│   ├── filtros.py
+│   ├── layout_kpis.py
+│   ├── layout_tabs.py
+│   ├── tabs_rutas.py              # Módulo de rutas con mapa
+│   └── tabs_sismos.py             # Módulo en tiempo real de sismos
+├── callbacks/                     # Callbacks organizados por módulo
+│   ├── callbacks_dashboard.py
+│   ├── callbacks_rutas.py
+│   └── callbacks_sismos.py
+├── utils/                         # Utilidades compartidas
+│   ├── data_loader.py             # Carga y manipulación de datos
+│   └── mapa_utils.py              # Mapas con Google Maps API + Folium
+├── Dockerfile
+├── pyproject.toml
+├── .gitignore
+└── README.md
 ```
 
 ---
@@ -39,15 +50,18 @@ Desarrollar un dashboard interactivo para visualizar y analizar datos financiero
 ## ⚙️ Requisitos
 
 - Python ≥ 3.9
-- PDM (gestor de dependencias recomendado) → https://pdm.fming.dev/
+- [PDM](https://pdm.fming.dev/) como gestor de dependencias
 
 Librerías principales:
 
-- `pandas`
 - `dash`
 - `plotly`
-- `pyarrow`
+- `pandas`
+- `requests`
+- `polyline`
+- `folium`
 - `faker`
+- `pyarrow`
 - `numpy`
 
 ---
@@ -61,7 +75,7 @@ git clone https://github.com/usuario/cooperativa-dashboard.git
 cd cooperativa-dashboard
 ```
 
-2. Instalar dependencias con [PDM](https://pdm.fming.dev/):
+2. Instalar dependencias con PDM:
 
 ```bash
 pdm install
@@ -72,7 +86,7 @@ pdm install
 ## 🚀 Ejecución
 
 ```bash
-pdm run dashboard.py
+pdm run python app.py
 ```
 
 Esto abrirá una instancia local del dashboard en:  
@@ -82,9 +96,9 @@ Esto abrirá una instancia local del dashboard en:
 
 ## 🧪 Datos
 
-Los datos provienen de archivos `.csv` y `.feather` ubicados en la carpeta `_data`. Para optimizar el rendimiento, el script utiliza archivos en formato **Feather**.
+Los datos provienen de archivos `.csv` y `.feather` en la carpeta `_data/`. Para mejor rendimiento se usan los `.feather`. 
 
-Si solo tienes los `.csv`, puedes convertirlos a `.feather` con este ejemplo:
+Convertir `.csv` a `.feather`:
 
 ```python
 import pandas as pd
@@ -96,18 +110,42 @@ df.to_feather("_data/clientes.feather")
 
 ## 📊 Funcionalidades del Dashboard
 
-- Filtros por departamento, año, profesión, cliente y rango de montos
-- Indicadores clave (total movimientos, monto promedio, cuentas activas, etc.)
-- Visualizaciones en pestañas:
-  - Por ubicación geográfica
-  - Por tiempo
-  - Por cliente
+- Filtros dinámicos por:
+  - Departamento
+  - Año
+  - Profesión
+  - Cliente
+  - Rango de montos
+- Indicadores clave (KPIs)
+- Visualizaciones interactivas por pestañas:
+  - 📍 Por Ubicación (barras, tortas, KPIs)
+  - 📈 Por Tiempo (montos por año)
+  - 👥 Por Cliente (movimientos y distribución)
+  - 🛣️ Rutas por Departamento (mapas con Google Maps)
+  - 🌍 Sismos en Tiempo Real (datos USGS + filtros por magnitud, región y tiempo)
+
+---
+
+## 🌍 Módulo de Rutas y Mapas
+
+- Carga de rutas mineras desde JSON
+- Visualización en Folium usando Google Maps Directions API
+- Filtros dinámicos por departamento de origen y destino
+- Marcadores personalizados (mina y transporte)
+
+---
+
+## ⏱️ Módulo de Sismos en Tiempo Real
+
+- Consumo de API pública [USGS Earthquake API](https://earthquake.usgs.gov/)
+- Filtros por magnitud mínima, región y tiempo
+- Actualización automática cada 60 segundos
+- Visualización en mapa geográfico y gráfico de barras
+- Mensajes inteligentes cuando no hay datos válidos
 
 ---
 
 ## 📦 Docker (opcional)
-
-Si deseas ejecutar en contenedor:
 
 ```bash
 docker build -t cooperativa-dashboard .
@@ -118,4 +156,4 @@ docker run -p 8050:8050 cooperativa-dashboard
 
 ## 🧠 Créditos
 
-Este proyecto fue desarrollado como parte del curso de Ciencia de Datos para apoyar el análisis de datos simulados de una cooperativa minera.
+Este proyecto fue desarrollado como parte del curso de Ciencia de Datos aplicado a una cooperativa minera. Incluye módulos para análisis financiero, visualización de rutas y eventos sísmicos en tiempo real, utilizando Dash, Plotly y APIs públicas.
